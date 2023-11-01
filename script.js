@@ -1,25 +1,34 @@
 const partyContainer = document.querySelector("#party-container")
+const form = document.querySelector("#addParty");
+
+
 
 const getPartyList = async () => {
     const response = await fetch("https://fsa-crud-2aa9294fe819.herokuapp.com/api/2308-acc-et-web-pt-b/events");
     const party = await response.json();
-    console.log(party.data)
     createParty(party.data)
 }
 
-const getRandomImage = async () => {
-    const response = await fetch("https://api.api-ninjas.com/v1/randomimage?category=nature");
-    const data = await response.json();
-    console.log(data);
-}
+const dateToISO = (dateTime) => {
+    // New Date
+    const date = new Date();
+    // Convert date to ISO format
+    const isoString = date.toISOString();
+    //Find the index of T
+    const idx = isoString.indexOf("T")
+    //Split the string starting from "T" to end of string
+    const timezone = isoString.substring(idx, isoString.length);
 
-getRandomImage();
+    return `${dateTime}${timezone}`;
+
+}
 
 const createParty= (data) => {
     const partyList = data.map((p, i) => {
 
         const card = document.createElement("div")
         const cardBody = document.createElement("div")
+        const delBtn = document.createElement("i");
         const listGroup = document.createElement("ul")
         const img = document.createElement("img")
         const name = document.createElement("h5")
@@ -27,9 +36,13 @@ const createParty= (data) => {
         const date = document.createElement("li");
         const loc = document.createElement("li");
         const cohortId = document.createElement("li")
+        
 
         card.className = "card m-3"
         card.style.width = "15rem"
+        delBtn.className = "fa-regular fa-calendar-xmark"
+        delBtn.style.color = "#ED5E68"
+        delBtn.style.opacity = "0.9"
 
         //Image
         img.setAttribute("src", `https://picsum.photos/200/300?random=${i}`)
@@ -60,12 +73,51 @@ const createParty= (data) => {
         //Append list group
         listGroup.append(date,loc,cohortId);
 
-        card.append(img, cardBody, listGroup)
+        card.append(delBtn, img, cardBody, listGroup)
          return card;
     })
-    console.log(partyList)
 
     partyContainer.append(...partyList)
 }
+
+form.addEventListener("submit", async (evt) => {
+    evt.preventDefault();
+    //Input
+    const name = document.querySelector("#name").value
+    const description = document.querySelector("#description").value
+    const dateVal = document.querySelector("#date").value
+    const location = document.querySelector("#location").value
+    const url = "https://fsa-crud-2aa9294fe819.herokuapp.com/api/2308-acc-et-web-pt-b/events"
+
+    const date = dateToISO(dateVal);
+    
+
+    // Obj
+    const newParty = {
+       name,
+       description,
+       date,
+       location
+    }
+    try {
+       const response =  await fetch(url, {
+        method: "POST",
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify(newParty)
+       })
+
+    } catch(err) {
+        console.log(err)
+    }
+
+    getPartyList();
+    
+    
+})
+
+
+
 
 getPartyList();
