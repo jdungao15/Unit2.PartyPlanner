@@ -1,12 +1,12 @@
 const partyContainer = document.querySelector("#party-container")
 const form = document.querySelector("#addParty");
-
+const URL = "https://fsa-crud-2aa9294fe819.herokuapp.com/api/2308-acc-et-web-pt-b/events"
 
 
 const getPartyList = async () => {
-    const response = await fetch("https://fsa-crud-2aa9294fe819.herokuapp.com/api/2308-acc-et-web-pt-b/events");
+    const response = await fetch(URL);
     const party = await response.json();
-    createParty(party.data)
+    createPartyComponent(party.data)
 }
 
 const dateToISO = (dateTime) => {
@@ -23,7 +23,7 @@ const dateToISO = (dateTime) => {
 
 }
 
-const createParty= (data) => {
+const createPartyComponent= (data) => {
     const partyList = data.map((p, i) => {
 
         const card = document.createElement("div")
@@ -87,12 +87,11 @@ form.addEventListener("submit", async (evt) => {
     const description = document.querySelector("#description").value
     const dateVal = document.querySelector("#date").value
     const location = document.querySelector("#location").value
-    const url = "https://fsa-crud-2aa9294fe819.herokuapp.com/api/2308-acc-et-web-pt-b/events"
 
     const date = dateToISO(dateVal);
     
 
-    // Obj
+    // create a new obj of new party
     const newParty = {
        name,
        description,
@@ -100,24 +99,27 @@ form.addEventListener("submit", async (evt) => {
        location
     }
     try {
-       const response =  await fetch(url, {
+       const response =  await fetch(URL, {
         method: "POST",
         headers: {
             'Content-type': 'application/json'
         },
         body: JSON.stringify(newParty)
        })
+       if (response.ok) {
+         console.log("Successful POST request")
+         // Get the new list of party
+         getPartyList();
+         //Reset the form
+         form.reset();
+       } else {
+            console.error("Something went wrong with the POST")
+       }
 
     } catch(err) {
         console.log(err)
     }
-
-    getPartyList();
-    
     
 })
-
-
-
 
 getPartyList();
