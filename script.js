@@ -28,7 +28,7 @@ const createPartyComponent= (data) => {
 
         const card = document.createElement("div")
         const cardBody = document.createElement("div")
-        const delBtn = document.createElement("i");
+        const delBtn = document.createElement("button");
         const listGroup = document.createElement("ul")
         const img = document.createElement("img")
         const name = document.createElement("h5")
@@ -36,44 +36,32 @@ const createPartyComponent= (data) => {
         const date = document.createElement("li");
         const loc = document.createElement("li");
         const cohortId = document.createElement("li")
+
+        
+        
+        card.innerHTML += 
+        ` 
+            <div class="card m-3" style="width: 15rem;">
+            <img src="https://picsum.photos/200/300?random=${i}">
+            <div class="card-body">
+                <h5 class="card-title">${p.name}</h5>
+                <p class="card-text">${p.description}</p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Date:${new Date(Date.parse(p.date))}</li>
+                <li class="list-group-item">Location: ${p.location}</li>
+                <li class="list-group-item">ID: ${p.cohortId}</li>
+            </ul>
+            <div class="btn__delete">
+                <a href="" >DELETE</a>
+                <div class="hoverBtn">
+                <p class="hoverText">ARE YOU SURE?</p>
+                </div>
+            </div>
+            </div>
+        `
         
 
-        card.className = "card m-3"
-        card.style.width = "15rem"
-        delBtn.className = "fa-regular fa-calendar-xmark"
-        delBtn.style.color = "#ED5E68"
-        delBtn.style.opacity = "0.9"
-
-        //Image
-        img.setAttribute("src", `https://picsum.photos/200/300?random=${i}`)
-
-        // Card Body
-        cardBody.className ="card-body"
-        //Title
-        name.className = "card-title"
-        name.textContent = p.name;
-        //Description
-        desc.className="card-text"
-        desc.textContent = p.description
-
-        // Append 
-        cardBody.append(name, desc)
-      
-
-        //List Group Container
-        listGroup.className = "list-group list-group-flush";
-        // List Group
-        date.className = "list-group-item"
-        date.textContent = `Date: ${new Date(Date.parse(p.date))}`
-        loc.className = "list-group-item"
-        loc.textContent = p.location;
-        cohortId.className = "list-group-item"
-        cohortId.textContent = `ID: ${p.cohortId}`;
-
-        //Append list group
-        listGroup.append(date,loc,cohortId);
-
-        card.append(delBtn, img, cardBody, listGroup)
          return card;
     })
 
