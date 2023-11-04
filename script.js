@@ -27,15 +27,6 @@ const createPartyComponent= (data) => {
     const partyList = data.map((p, i) => {
 
         const card = document.createElement("div")
-        const cardBody = document.createElement("div")
-        const delBtn = document.createElement("button");
-        const listGroup = document.createElement("ul")
-        const img = document.createElement("img")
-        const name = document.createElement("h5")
-        const desc = document.createElement("p");
-        const date = document.createElement("li");
-        const loc = document.createElement("li");
-        const cohortId = document.createElement("li")
 
         
         
