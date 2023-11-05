@@ -1,12 +1,13 @@
 const partyContainer = document.querySelector("#party-container")
 const form = document.querySelector("#addParty");
 const URL = "https://fsa-crud-2aa9294fe819.herokuapp.com/api/2308-acc-et-web-pt-b/events"
-
+let partyList = [];
 
 const getPartyList = async () => {
     const response = await fetch(URL);
     const party = await response.json();
-    createPartyComponent(party.data)
+    partyList = party.data;
+    createPartyComponent(partyList)
 }
 
 const dateToISO = (dateTime) => {
@@ -18,20 +19,16 @@ const dateToISO = (dateTime) => {
     const idx = isoString.indexOf("T")
     //Split the string starting from "T" to end of string
     const timezone = isoString.substring(idx, isoString.length);
-
     return `${dateTime}${timezone}`;
-
 }
 
 const createPartyComponent= (data) => {
+    partyContainer.innerHTML = ""
     const partyList = data.map((p, i) => {
-
         const card = document.createElement("div")
-
-        
-        
-        card.innerHTML += 
-        ` 
+       
+       
+       card.innerHTML += ` 
             <div class="card m-3" style="width: 15rem;">
             <img src="https://picsum.photos/200/300?random=${i}">
             <div class="card-body">
@@ -43,21 +40,22 @@ const createPartyComponent= (data) => {
                 <li class="list-group-item">Location: ${p.location}</li>
                 <li class="list-group-item">ID: ${p.cohortId}</li>
             </ul>
-            <div class="btn__delete">
+            <div class="btn__delete" id="btn__delete">
                 <a href="" >DELETE</a>
                 <div class="hoverBtn">
-                <p class="hoverText">ARE YOU SURE?</p>
+                <p value=${p.id} class="hoverText">ARE YOU SURE?</p>
                 </div>
             </div>
             </div>
         `
-        
-
          return card;
     })
 
     partyContainer.append(...partyList)
 }
+
+getPartyList();
+
 
 form.addEventListener("submit", async (evt) => {
     evt.preventDefault();
@@ -66,10 +64,8 @@ form.addEventListener("submit", async (evt) => {
     const description = document.querySelector("#description").value
     const dateVal = document.querySelector("#date").value
     const location = document.querySelector("#location").value
-
     const date = dateToISO(dateVal);
     
-
     // create a new obj of new party
     const newParty = {
        name,
@@ -88,9 +84,10 @@ form.addEventListener("submit", async (evt) => {
        if (response.ok) {
          console.log("Successful POST request")
          // Get the new list of party
+         form.reset();
          getPartyList();
          //Reset the form
-         form.reset();
+         
        } else {
             console.error("Something went wrong with the POST")
        }
@@ -101,4 +98,22 @@ form.addEventListener("submit", async (evt) => {
     
 })
 
-getPartyList();
+partyContainer.addEventListener("click", async (e) => {
+    e.preventDefault();
+    if (e.target.classList.value === "hoverText") {
+      id = e.target.getAttribute('value')
+       
+      try {
+        const response = await fetch(`${URL}/${id}`, {method: "DELETE"})
+        console.log(response)
+        if (response.ok) {
+            console.log("Successfully Deleted")
+            getPartyList();
+        }
+      } catch(err) {
+        console.log(err)
+      }
+      
+    }
+})
+
