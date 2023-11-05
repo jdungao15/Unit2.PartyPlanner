@@ -23,11 +23,10 @@ const dateToISO = (dateTime) => {
 }
 
 const createPartyComponent= (data) => {
+    //Make the parent container, empty for the new component that will be added later on.
     partyContainer.innerHTML = ""
     const partyList = data.map((p, i) => {
         const card = document.createElement("div")
-       
-       
        card.innerHTML += ` 
             <div class="card m-3" style="width: 15rem;">
             <img src="https://picsum.photos/200/300?random=${i}">
@@ -40,7 +39,7 @@ const createPartyComponent= (data) => {
                 <li class="list-group-item">Location: ${p.location}</li>
                 <li class="list-group-item">ID: ${p.cohortId}</li>
             </ul>
-            <div class="btn__delete" id="btn__delete">
+            <div class="btn__delete">
                 <a href="" >DELETE</a>
                 <div class="hoverBtn">
                 <p value=${p.id} class="hoverText">ARE YOU SURE?</p>
@@ -54,9 +53,8 @@ const createPartyComponent= (data) => {
     partyContainer.append(...partyList)
 }
 
-getPartyList();
 
-
+// POST HANDLER
 form.addEventListener("submit", async (evt) => {
     evt.preventDefault();
     //Input
@@ -98,6 +96,7 @@ form.addEventListener("submit", async (evt) => {
     
 })
 
+// Delete Handler
 partyContainer.addEventListener("click", async (e) => {
     e.preventDefault();
     if (e.target.classList.value === "hoverText") {
@@ -116,4 +115,7 @@ partyContainer.addEventListener("click", async (e) => {
       
     }
 })
+
+// Get the DATA and render
+getPartyList();
 
